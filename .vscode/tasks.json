@@ -7,10 +7,23 @@
 			"command": "C:\\mingw64\\bin\\gcc.exe",
 			"args": [
 				"-fdiagnostics-color=always",
+				
 				"-g",
-				"${file}",
+				
+				"${workspaceFolder}\\src\\*.c",
+				
+				"-I${workspaceFolder}\\build\\include\\GLFW",
+				"-I${workspaceFolder}\\build\\include\\GL",
+				"-L${workspaceFolder}\\build\\lib\\GLEW",
+				"-L${workspaceFolder}\\build\\lib\\GLFW",
+				"-lglew32s",
+				"-lglfw3dll",
+				"-lopengl32",
+
+				"-D GLEW_STATIC",
+				
 				"-o",
-				"${fileDirname}\\..\\bin\\${fileBasenameNoExtension}.exe"
+				"${workspaceFolder}\\bin\\${fileBasenameNoExtension}.exe",
 			],
 			"options": {
 				"cwd": "${fileDirname}"
