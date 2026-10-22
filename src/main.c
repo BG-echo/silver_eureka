@@ -3,7 +3,7 @@
 #define WIDTH 600
 #define HEIGHT 800
 
-int WinMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
     printf("First Opengl Project");
 
@@ -27,7 +27,7 @@ int WinMain(int argc, char** argv)
     while(!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-        
+
         glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(window);
