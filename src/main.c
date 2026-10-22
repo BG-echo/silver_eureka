@@ -1,28 +1,20 @@
 #include "main.h"
+#include "defines.h"
+
 
 #define WIDTH 600
 #define HEIGHT 800
 
 int main(int argc, char** argv)
 {
-    printf("First Opengl Project");
-
-    if(!glfwInit())
-        exit(1);
+    printf("First Opengl Project\n");
+    ASSERT(!glfwInit(), "Failed to Load GLFW\n");
 
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Opengl", NULL, NULL);
-    if(!window)
-    {
-        glfwTerminate();
-        return EXIT_FAILURE;
-    }
+    ASSERT(!window, "Failed to Create Window\n");
 
     glfwMakeContextCurrent(window);
-    if(glewInit() != GLEW_OK)
-    {
-        glfwTerminate();
-        return EXIT_FAILURE;
-    }
+    ASSERT(glewInit() != GLEW_OK, "Failed to Load GLEW\n");
 
     while(!glfwWindowShouldClose(window))
     {
