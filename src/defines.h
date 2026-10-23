@@ -1,1 +1,1 @@
-#define ASSERT(_e, ...) if(_e) { printf(__VA_ARGS__); return EXIT_FAILURE; }
+#define ASSERT(_e, ...) if(_e) { printf(__VA_ARGS__); exit(EXIT_FAILURE); }

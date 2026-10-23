@@ -1,32 +1,50 @@
 #include "main.h"
+#include "renderer.h"
 #include "defines.h"
 
-
-#define WIDTH 600
+#define WIDTH 800
 #define HEIGHT 800
 
-int main(int argc, char** argv)
+static GLFWwindow* s_window = NULL;
+
+static void svInit(const char* msg)
 {
-    printf("First Opengl Project\n");
+    printf(msg);
     ASSERT(!glfwInit(), "Failed to Load GLFW\n");
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Opengl", NULL, NULL);
-    ASSERT(!window, "Failed to Create Window\n");
+    s_window = glfwCreateWindow(WIDTH, HEIGHT, msg, NULL, NULL);
+    ASSERT(!s_window, "Failed to Create Window\n");
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(s_window);
     ASSERT(glewInit() != GLEW_OK, "Failed to Load GLEW\n");
+}
 
-    while(!glfwWindowShouldClose(window))
+static void svRun(void(*func)())
+{
+    while(!glfwWindowShouldClose(s_window))
     {
         glfwPollEvents();
 
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
+        func();
+        glfwSwapBuffers(s_window);
     }
+}
 
-    glfwDestroyWindow(window);
+static void svTerminate()
+{
+    glfwDestroyWindow(s_window);
     glfwTerminate();
+}
 
+int main(int argc, char** argv)
+{
+    //Initialize
+    svInit("First Opengl Project");
+
+    //Run
+    svRun(vRenderFunc);
+    
+    //Terminate
+    svTerminate();
     return 0;
 }
