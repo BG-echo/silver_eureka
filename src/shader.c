@@ -86,3 +86,8 @@ void vUseShader(Shader* shader)
 {
     glUseProgram(shader->m_uShaderProgram);
 }
+
+void vShaderSetInt(Shader* shader, const char* name, int value)
+{
+    glUniform1i(glGetUniformLocation(shader->m_uShaderProgram, name), value);
+}

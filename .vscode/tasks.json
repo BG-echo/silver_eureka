@@ -9,6 +9,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}\\src\\*.c",
+                "-I${workspaceFolder}\\build\\include",
                 "-I${workspaceFolder}\\build\\include\\GLFW",
                 "-I${workspaceFolder}\\build\\include\\GL",
                 "-L${workspaceFolder}\\build\\lib\\GLEW",
@@ -18,7 +19,7 @@
                 "-lopengl32",
                 "-D GLEW_STATIC",
                 "-o",
-                "${workspaceFolder}\\bin\\${fileBasenameNoExtension}.exe"
+                "${workspaceFolder}\\bin\\rooster.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -28,6 +29,6 @@
             ],
             "group": "build",
             "detail": "compiler: C:\\mingw64\\bin\\gcc.exe"
-        }
+        },
     ]
 }
