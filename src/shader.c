@@ -91,3 +91,8 @@ void vShaderSetInt(Shader* shader, const char* name, int value)
 {
     glUniform1i(glGetUniformLocation(shader->m_uShaderProgram, name), value);
 }
+
+void vShaderSetMatrix(Shader* shader, const char* name, float* value)
+{
+    glUniformMatrix4fv(glGetUniformLocation(shader->m_uShaderProgram, name), 1, GL_TRUE, value);
+}

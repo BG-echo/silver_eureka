@@ -11,6 +11,8 @@
                 "${workspaceFolder}\\src\\*.c",
                 "-I${workspaceFolder}\\build\\include",
                 "-I${workspaceFolder}\\build\\include\\GLFW",
+                "-I${workspaceFolder}\\build\\include\\libfixmatrix",
+                "-I${workspaceFolder}\\build\\include\\libfixmatrix\\libfixmath",
                 "-I${workspaceFolder}\\build\\include\\GL",
                 "-L${workspaceFolder}\\build\\lib\\GLEW",
                 "-L${workspaceFolder}\\build\\lib\\GLFW",

@@ -7,17 +7,17 @@
 #include "stb_image.h"
 #include "defines.h"
 
-static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t size, float* vertices, float* color, const char* texPath)
+static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t vsize, float* vertices, float* color, size_t tsize, float* texcoords, const char* texPath)
 {
     (*g) = (struct sGraphicObjects*)malloc(1 * sizeof(struct sGraphicObjects));
-    glGenBuffers(1, &(*g)->m_uVAO);
+    glGenVertexArrays(1, &(*g)->m_uVAO);
     glGenBuffers(3, (*g)->m_uVBO);
     
     glBindVertexArray((*g)->m_uVAO);
     
     //Vertices
     glBindBuffer(GL_ARRAY_BUFFER, (*g)->m_uVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vsize * sizeof(float), vertices, GL_STATIC_DRAW);
     
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -26,7 +26,7 @@ static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t size, float
 
     //Color
     glBindBuffer(GL_ARRAY_BUFFER, (*g)->m_uVBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), color, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vsize * sizeof(float), color, GL_STATIC_DRAW);
     
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
@@ -36,16 +36,6 @@ static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t size, float
     //Texture
     if(texPath != NULL)
     {
-        float texCoords[] = 
-        {
-            0.0f, 1.0f,  // top-right corner
-            1.0f, 0.0f,  // lower-right corner
-            0.0f, 0.0f,  // lower-left corner  
-            0.0f, 0.0f,  // lower-left corner  
-            1.0f, 1.0f,  // top-left corner
-            0.0f, 1.0f,  // top-right corner
-        };
-        
         glGenTextures(1, &(*g)->m_texture);
         
         glActiveTexture(GL_TEXTURE0);
@@ -60,13 +50,14 @@ static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t size, float
         stbi_set_flip_vertically_on_load_thread(true);
         unsigned char* data = stbi_load(texPath, &width, &height, &nrChannels, 0);
         ASSERT(!data, glfwTerminate(),"Error couldn't load the specified texture at: %s", texPath);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        GLenum format = nrChannels == 4 ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
         
         glBindBuffer(GL_ARRAY_BUFFER, (*g)->m_uVBO[2]);
-        glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), texCoords, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tsize * sizeof(float), texcoords, GL_STATIC_DRAW);
         
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(2);
@@ -77,32 +68,20 @@ static void svAllocGraphicObjects(struct sGraphicObjects** g, size_t size, float
     glBindVertexArray(0);
 }
 
-void vCreateTriangle(Triangle** t, float* vertices, float* color, const char* texPath)
+void vCreateObject(Object** t, size_t vsize, float* vertices, float* color, size_t tsize, float* texcoords, const char* texPath)
 {
-    (*t) = (Triangle*)malloc(1 * sizeof(Triangle));
+    (*t) = (Object*)malloc(1 * sizeof(Object));
     (*t)->m_fVertices = vertices;
     (*t)->m_fColor = color;
 
-    svAllocGraphicObjects(&((*t)->GObject), 9, (*t)->m_fVertices, (*t)->m_fColor, texPath);
+    svAllocGraphicObjects(&((*t)->GObject), vsize, (*t)->m_fVertices, (*t)->m_fColor, tsize, texcoords, texPath);
 }
 
-void vCreateContainer(Container** c, float* vertices, float* color, const char* texPath)
+void vDestroyObject(Object* const t)
 {
-    (*c) = (Container*)malloc(1 * sizeof(Container));
-    (*c)->m_fVertices = vertices;
-    (*c)->m_fColor = color;
-    
-    svAllocGraphicObjects(&((*c)->GObject), 18, (*c)->m_fVertices, (*c)->m_fColor, texPath);
-}
-
-void vDestroyTriangle(Triangle* const t)
-{
+    glDeleteTextures(1, &t->GObject->m_texture);
+    glDeleteBuffers(3, t->GObject->m_uVBO);
+    glDeleteVertexArrays(1, &t->GObject->m_uVAO);
     free(t->GObject);
     free(t);
-}
-
-void vDestroyContainer(Container* const c)
-{
-    free(c->GObject);
-    free(c);
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 struct sGraphicObjects
 {
     unsigned int m_uVAO;
@@ -7,25 +9,15 @@ struct sGraphicObjects
     unsigned int m_texture;
 };
 
-typedef struct sTriangle 
+typedef struct sObject 
 {
     float* m_fVertices;
     float* m_fColor;
 
     struct sGraphicObjects* GObject;
-}Triangle;
-
-typedef struct sContainer
-{
-    float* m_fVertices;
-    float* m_fColor;
-
-    struct sGraphicObjects* GObject;
-}Container;
+}Object;
 
 
-extern void vCreateTriangle(Triangle** t, float* vertices, float* color, const char* texPath);
-extern void vCreateContainer(Container** c, float* vertices, float* color, const char* texPath);
+extern void vCreateObject(Object** t, size_t vsize, float* vertices, float* color, size_t tsize, float* texcoords, const char* texPath);
 
-extern void vDestroyTriangle(Triangle* const t);
-extern void vDestroyContainer(Container* const c);
+extern void vDestroyObject(Object* const t);
